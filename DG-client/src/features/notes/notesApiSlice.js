@@ -1,12 +1,12 @@
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice";
 
-const usersAdapter = createEntityAdapter();
-const initialState = usersAdapter.getInitialState();
-export const usersApiSlice = apiSlice.injectEndpoints({
+const notesAdapter = createEntityAdapter();
+const initialState = notesAdapter.getInitialState();
+export const notesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getUsers: builder.query({
-      query: () => "/users",
+    getNotes: builder.query({
+      query: () => "/notes",
       validateStatus: (response, result) => {
         return response.status === 200 && !result.isError;
       },
@@ -21,8 +21,8 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) => {
         if (result?.ids) {
           return [
-            { type: "User", id: "LIST" },
-            ...result.ids.map((id) => ({ type: "User", id: "LIST" })),
+            { type: "Post", id: "LIST" },
+            ...result.ids.map((id) => ({ type: "Post", id: "LIST" })),
           ];
         }
       },
@@ -30,22 +30,22 @@ export const usersApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetUsersQuery } = usersApiSlice;
+export const { useGetNotesQuery } = notesApiSlice;
 
 // returns query result object
-export const selectUsersResult = usersApiSlice.endpoints.getUsers.select();
+export const selectNotesResult = notesApiSlice.endpoints.getUsers.select();
 
 // creates memoized selector
-const selectUsersData = createSelector(
-  selectUsersResult,
-  (usersResult) => usersResult.data // normalized state object with ids & entities
+const selectNotesData = createSelector(
+  selectNotesResult,
+  (notesResult) => notesResult.data // normalized state object with ids & entities
 );
 
 // getSelectors create these selectors and we rename them with aliases
 export const {
-  selectAll: selectAllUsers,
-  selectById: selectUserById,
-  selectIds: selectUserIds,
-} = usersAdapter.getSelectors(
-  (state) => selectUsersData(state) ?? initialState
+  selectAll: selectAllNotes,
+  selectById: selectPostById,
+  selectIds: selectPostIds,
+} = notesAdapter.getSelectors(
+  (state) => selectNotesData(state) ?? initialState
 ); // bu yerda selectUsersData ga argument qilib berilgan state usersResult nomi bilan qabul qilinadi

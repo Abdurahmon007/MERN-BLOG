@@ -10,11 +10,12 @@ const { StatusCodes } = require("http-status-codes");
 const getAllUsers = asyncHandler(async (req, res) => {
   const users = await User.find().select("-password").lean();
   if (!users?.length) {
+    console.log(users);
     return res
       .status(StatusCodes.NOT_FOUND)
       .json({ message: "Not found Users" });
   }
-  res.status(StatusCodes.BAD_REQUEST).json(users);
+  res.status(StatusCodes.OK).json(users);
 });
 
 // @desc    Create New User
