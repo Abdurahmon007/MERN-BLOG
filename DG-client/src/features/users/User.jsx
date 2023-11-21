@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
+import { useSelector } from "react-redux";
 import { selectUserById } from "./usersApiSlice";
 
 function User({ userId }) {
@@ -10,7 +11,7 @@ function User({ userId }) {
   if (user) {
     const handleEdit = () => navigate(`/dash/users/${userId}`);
     const userRolesString = user.roles.toString().replaceAll(",", ", ");
-    const cellStatus = user.active ? "" : "table__cell--active";
+    const cellStatus = user.active ? "" : "table__cell--inactive";
 
     return (
       <tr className="table__row user">

@@ -1,7 +1,10 @@
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice";
 
-const notesAdapter = createEntityAdapter();
+const notesAdapter = createEntityAdapter({
+  sortComparer: (a, b) =>
+    a.completed === b.completed ? 0 : a.completed ? 1 : -1,
+});
 const initialState = notesAdapter.getInitialState();
 export const notesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -16,7 +19,7 @@ export const notesApiSlice = apiSlice.injectEndpoints({
           user.id = user._id;
           return user;
         });
-        return usersAdapter.setAll(initialState, loadedUsers);
+        return notesAdapter.setAll(initialState, loadedUsers);
       },
       providesTags: (result, error, arg) => {
         if (result?.ids) {
@@ -27,13 +30,14 @@ export const notesApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    // ! here is the last line code
   }),
 });
 
 export const { useGetNotesQuery } = notesApiSlice;
 
 // returns query result object
-export const selectNotesResult = notesApiSlice.endpoints.getUsers.select();
+export const selectNotesResult = notesApiSlice.endpoints.getNotes.select();
 
 // creates memoized selector
 const selectNotesData = createSelector(
@@ -44,8 +48,8 @@ const selectNotesData = createSelector(
 // getSelectors create these selectors and we rename them with aliases
 export const {
   selectAll: selectAllNotes,
-  selectById: selectPostById,
-  selectIds: selectPostIds,
+  selectById: selectNoteById,
+  selectIds: selectNoteIds,
 } = notesAdapter.getSelectors(
   (state) => selectNotesData(state) ?? initialState
 ); // bu yerda selectUsersData ga argument qilib berilgan state usersResult nomi bilan qabul qilinadi

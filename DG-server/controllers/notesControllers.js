@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const Note = require("../models/Note");
 const asyncHandler = require("express-async-handler");
-const bcryt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 
 // @desc    Get all notes
@@ -14,7 +13,16 @@ const getAllNotes = asyncHandler(async (req, res) => {
       .status(StatusCodes.NOT_FOUND)
       .json({ message: "Not found notes" });
   }
-  res.status(StatusCodes.BAD_REQUEST).json(notes);
+  // Add username to each note before sending the response
+  // See Promise.all with map() here: https://youtu.be/4lqJBBEpjRE
+  // You could also do this with a for...of loop
+  const notesWithUser = await Promise.all(
+    notes.map(async (note) => {
+      const user = await User.findById(note.user).lean().exec();
+      return { ...note, username: user.username };
+    })
+  );
+  res.status(StatusCodes.OK).json(notesWithUser);
 });
 
 // @desc    Create New Note
