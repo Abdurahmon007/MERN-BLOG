@@ -3,7 +3,7 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
-import { selectUserById } from "./usersApiSlice";
+import { selectUserById, useUpdateUserMutation } from "./usersApiSlice";
 
 function User({ userId }) {
   const user = useSelector((state) => selectUserById(state, userId));
@@ -12,7 +12,6 @@ function User({ userId }) {
     const handleEdit = () => navigate(`/dash/users/${userId}`);
     const userRolesString = user.roles.toString().replaceAll(",", ", ");
     const cellStatus = user.active ? "" : "table__cell--inactive";
-
     return (
       <tr className="table__row user">
         <td className={`table__cell ${cellStatus}`}>{user.username}</td>

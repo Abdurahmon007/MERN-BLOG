@@ -21,16 +21,46 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) => {
         if (result?.ids) {
           return [
-            { type: "User", id: "LIST" },
-            ...result.ids.map((id) => ({ type: "User", id: "LIST" })),
+            { type: "User", id: "LIST" }, // ushbu obyektdan butun list o'zgartirilishi kk bo'lganda foydalaniladi.
+            ...result.ids.map((id) => ({ type: "User", id })), // id li taglardan faqat bitta user o'zgarganda foydalaniladi.
           ];
         }
       },
     }),
+    addNewUser: builder.mutation({
+      query: (initialUserData) => ({
+        url: "/users",
+        method: "POST",
+        body: { ...initialUserData },
+      }),
+      invalidateTags: [{ type: "User", Id: "LIST" }],
+    }),
+    updateUser: builder.mutation({
+      query: (initialUserData) => ({
+        url: `/users`,
+        method: "PATCH",
+        body: { ...initialUserData },
+      }),
+      invalidateTags: (result, error, arg) => {
+        return [{ type: "User", id: arg.id }];
+      },
+    }),
+    deleteUser: builder.mutation({
+      query: ({ id }) => ({
+        url: `/users/userId`,
+        method: "DELETE",
+        body: { id },
+      }),
+    }),
   }),
 });
 
-export const { useGetUsersQuery } = usersApiSlice;
+export const {
+  useGetUsersQuery,
+  useAddNewUserMutation,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} = usersApiSlice;
 
 // returns query result object
 export const selectUsersResult = usersApiSlice.endpoints.getUsers.select();
