@@ -5,6 +5,7 @@ const noteSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
+      required: true,
       ref: "User",
     },
     title: {
@@ -17,7 +18,7 @@ const noteSchema = new mongoose.Schema(
     },
     completed: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   { timestamps: true }

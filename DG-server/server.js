@@ -6,6 +6,7 @@ const app = express();
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const morgan = require("morgan");
 
 // connect to the database
 const connectDB = require("./config/dbConnect");
@@ -17,7 +18,7 @@ const errorHandler = require("./midlleware/errorHandler");
 const corsOptions = require("./config/corsOptions");
 
 const PORT = process.env.PORT || 3001;
-
+app.use(morgan("dev"));
 app.use(logger);
 app.use(express.json());
 app.use(cookieParser());

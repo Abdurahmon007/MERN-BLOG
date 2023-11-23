@@ -12,11 +12,70 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       },
       keepUnusedDataFor: 5,
       transformResponse: (responseData) => {
-        // ! HERE IS THE LAST LINE CODE FOR TODAY
-        console.log(responseData);
+        const loadedUsers = responseData.map((user) => {
+          user.id = user._id;
+          return user;
+        });
+        return usersAdapter.setAll(initialState, loadedUsers);
       },
+      providesTags: (result, error, arg) => {
+        if (result?.ids) {
+          return [
+            { type: "User", id: "LIST" }, // ushbu obyektdan butun list o'zgartirilishi kk bo'lganda foydalaniladi.
+            ...result.ids.map((id) => ({ type: "User", id })), // id li taglardan faqat bitta user o'zgarganda foydalaniladi.
+          ];
+        }
+      },
+    }),
+    addNewUser: builder.mutation({
+      query: (initialUserData) => ({
+        url: "/users",
+        method: "POST",
+        body: { ...initialUserData },
+      }),
+      invalidateTags: [{ type: "User", Id: "LIST" }],
+    }),
+    updateUser: builder.mutation({
+      query: (initialUserData) => ({
+        url: `/users`,
+        method: "PATCH",
+        body: { ...initialUserData },
+      }),
+      invalidateTags: (result, error, arg) => {
+        return [{ type: "User", id: arg.id }];
+      },
+    }),
+    deleteUser: builder.mutation({
+      query: ({ id }) => ({
+        url: `/users/userId`,
+        method: "DELETE",
+        body: { id },
+      }),
     }),
   }),
 });
 
-// export default
+export const {
+  useGetUsersQuery,
+  useAddNewUserMutation,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} = usersApiSlice;
+
+// returns query result object
+export const selectUsersResult = usersApiSlice.endpoints.getUsers.select();
+
+// creates memoized selector
+const selectUsersData = createSelector(
+  selectUsersResult,
+  (usersResult) => usersResult.data // normalized state object with ids & entities
+);
+
+// getSelectors create these selectors and we rename them with aliases
+export const {
+  selectAll: selectAllUsers,
+  selectById: selectUserById,
+  selectIds: selectUserIds,
+} = usersAdapter.getSelectors(
+  (state) => selectUsersData(state) ?? initialState
+); // bu yerda selectUsersData ga argument qilib berilgan state usersResult nomi bilan qabul qilinadi
