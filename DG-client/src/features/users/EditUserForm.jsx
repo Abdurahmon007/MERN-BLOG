@@ -115,6 +115,7 @@ function EditUserForm({ user }) {
             >
               <FontAwesomeIcon icon={faSave} />
             </button>
+            {/* *fas */}
             <button
               className="icon-button"
               title="Delete"
