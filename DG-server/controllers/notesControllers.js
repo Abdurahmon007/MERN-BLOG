@@ -11,7 +11,7 @@ const getAllNotes = asyncHandler(async (req, res) => {
   if (!notes?.length) {
     return res
       .status(StatusCodes.NOT_FOUND)
-      .json({ message: "Not found notes" });
+      .json({ message: "No notes found" });
   }
   // Add username to each note before sending the response
   // See Promise.all with map() here: https://youtu.be/4lqJBBEpjRE

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../config/roles";
 
-const USER_REGEX = /^[A-z]{3, 20}$/;
+const USER_REGEX = /^[A-z]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 
 function NewUserForm() {
@@ -21,6 +21,7 @@ function NewUserForm() {
   const [roles, setRoles] = useState(["Employee"]);
 
   useEffect(() => {
+    console.log(USER_REGEX.test(username));
     setValidUsername(USER_REGEX.test(username));
   }, [username]);
 
@@ -51,7 +52,7 @@ function NewUserForm() {
 
   const canSave =
     [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
-
+  // console.log([validUsername].every(Boolean));
   const onSaveUserClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -77,6 +78,7 @@ function NewUserForm() {
   const content = (
     <>
       <p className={errClass}>{error?.data?.message}</p>
+
       <form className="form" onSubmit={onSaveUserClicked}>
         <div className="form__title-row">
           <h2>New User</h2>

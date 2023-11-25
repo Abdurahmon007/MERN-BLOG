@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../config/roles";
 
-const USER_REGEX = /^[A-z]{3, 20}$/;
+const USER_REGEX = /^[A-z]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 
 function EditUserForm({ user }) {
@@ -23,7 +23,7 @@ function EditUserForm({ user }) {
 
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(user.username);
   const [validUsername, setValidUsername] = useState(false);
   const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
@@ -115,13 +115,12 @@ function EditUserForm({ user }) {
             >
               <FontAwesomeIcon icon={faSave} />
             </button>
-            {/* *fas */}
             <button
               className="icon-button"
               title="Delete"
               onClick={onDeleteUser}
             >
-              <FontAwesomeIcon icon={faSave} />
+              <FontAwesomeIcon icon={faTrashCan} />
             </button>
           </div>
         </div>
