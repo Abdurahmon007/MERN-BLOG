@@ -29,6 +29,7 @@ connectDB();
 app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/", require("./routes/root.js"));
+app.use("/auth", require("./routes/authRoutes.js"));
 app.use("/users", require("./routes/userRoutes.js"));
 app.use("/notes", require("./routes/notesRoutes.js"));
 

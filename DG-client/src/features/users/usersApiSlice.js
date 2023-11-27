@@ -23,16 +23,18 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             { type: "User", id: "LIST" }, // ushbu obyektdan butun list o'zgartirilishi kk bo'lganda foydalaniladi.
             ...result.ids.map((id) => ({ type: "User", id })), // id li taglardan faqat bitta user o'zgarganda foydalaniladi.
           ];
-        }
+        } else return [{ type: "User", id: "LIST" }];
       },
     }),
     addNewUser: builder.mutation({
       query: (initialUserData) => ({
         url: "/users",
         method: "POST",
-        body: { ...initialUserData },
+        body: {
+          ...initialUserData,
+        },
       }),
-      invalidateTags: [{ type: "User", Id: "LIST" }],
+      invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
     updateUser: builder.mutation({
       query: (initialUserData) => ({
@@ -40,16 +42,19 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body: { ...initialUserData },
       }),
-      invalidateTags: (result, error, arg) => {
+      invalidatesTags: (result, error, arg) => {
         return [{ type: "User", id: arg.id }];
       },
     }),
     deleteUser: builder.mutation({
       query: ({ id }) => ({
-        url: `/users/userId`,
+        url: `/users`,
         method: "DELETE",
         body: { id },
       }),
+      invalidatesTags: (result, error, arg) => {
+        return [{ type: "User", id: arg.id }];
+      },
     }),
   }),
 });

@@ -14,7 +14,7 @@ function EditUserForm({ user }) {
   const [
     deleteUser,
     {
-      isLoading: isDelLoading,
+      // isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
@@ -42,26 +42,25 @@ function EditUserForm({ user }) {
     if (isSuccess || isDelSuccess) {
       setUsername("");
       setPassword("");
-      setRoles([""]);
+      setRoles([]);
       navigate("/dash/users");
     }
-  }, [isSuccess, navigate]);
+  }, [isSuccess, isDelSuccess, navigate]);
 
   const onUsernameChanged = (e) => setUsername(e.target.value);
   const onPasswordChanged = (e) => setPassword(e.target.value);
 
   const onRolesChanged = (e) => {
-    const values = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    console.log(values);
+    const values = Array.from(e.target.selectedOptions, (option) => {
+      return option.value;
+    });
     setRoles(values);
   };
 
   const onActiveChanged = () => setActive((prev) => !prev);
 
   const onSaveUserClicked = async (e) => {
+    e.preventDefault();
     if (password) {
       await updateUser({ id: user.id, username, password, roles, active });
     } else {
@@ -69,7 +68,7 @@ function EditUserForm({ user }) {
     }
   };
 
-  const onDeleteUser = async (e) => {
+  const onDeleteUserClicked = async (e) => {
     await deleteUser({ id: user.id });
   };
 
@@ -98,7 +97,7 @@ function EditUserForm({ user }) {
     ? "form__input--incomplete"
     : "";
 
-  const errContent = (error?.data?.message || error?.data?.message) ?? "";
+  const errContent = (error?.data?.message || delError?.data?.message) ?? "";
 
   const content = (
     <>
@@ -118,7 +117,8 @@ function EditUserForm({ user }) {
             <button
               className="icon-button"
               title="Delete"
-              onClick={onDeleteUser}
+              type="button"
+              onClick={onDeleteUserClicked}
             >
               <FontAwesomeIcon icon={faTrashCan} />
             </button>

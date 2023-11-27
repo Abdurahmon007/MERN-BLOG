@@ -30,7 +30,6 @@ const getAllNotes = asyncHandler(async (req, res) => {
 // @access Private
 const createNewNote = asyncHandler(async (req, res) => {
   const { user, title, text } = req.body;
-  console.log("create");
   // Confirm data;
   if (!user || !title || !text) {
     return res
@@ -64,7 +63,7 @@ const createNewNote = asyncHandler(async (req, res) => {
 // @route   Patch /
 // @access Private
 const updateNote = asyncHandler(async (req, res) => {
-  const { user, title, text, completed } = req.body;
+  const { id, user, title, text, completed } = req.body;
   // Confirm data
   if (!user || !title || !text) {
     return res
@@ -102,13 +101,12 @@ const updateNote = asyncHandler(async (req, res) => {
 // @access Private
 const deleteNote = asyncHandler(async (req, res) => {
   const { id } = req.body;
-
   if (!id) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Note ID is Required" });
   }
-  const note = await User.findById(id).exec();
+  const note = await Note.findById(id).exec();
   if (!note) {
     return res
       .status(StatusCodes.NOT_FOUND)

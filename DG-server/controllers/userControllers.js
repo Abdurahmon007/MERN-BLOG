@@ -73,7 +73,7 @@ const updateUser = asyncHandler(async (req, res) => {
       .json({ message: "All fields are required" });
   }
   const user = await User.findById(id).exec();
-
+  console.log({ id, username, password, roles, active });
   if (!user) {
     return res
       .status(StatusCodes.NOT_FOUND)
@@ -98,7 +98,7 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 
   const updatedUser = await user.save();
-  res.status(StatusCodes.OK).json({ message: `${username} updated` });
+  res.status(StatusCodes.OK).json({ message: `username ${username} updated` });
 });
 
 // @desc    Delete a User
@@ -106,7 +106,6 @@ const updateUser = asyncHandler(async (req, res) => {
 // @access Private
 const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.body;
-
   if (!id) {
     return res
       .status(StatusCodes.BAD_REQUEST)
