@@ -7,6 +7,9 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/userControllers");
+const verifyJwt = require("../midlleware/verifyJWT");
+
+router.use(verifyJwt);
 
 router
   .route("/")
