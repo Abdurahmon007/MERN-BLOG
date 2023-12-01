@@ -8,7 +8,9 @@ function UsersList() {
     isLoading,
     isSuccess,
     error,
-  } = useGetUsersQuery(undefined, {
+  } = useGetUsersQuery("usersList", {
+    // ushbu usersList faqat polling bo'lganda
+    //ko'rinadi, ungacha undefined turadi
     pollingInterval: 60000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
@@ -41,8 +43,8 @@ function UsersList() {
         <tbody>{tableContent}</tbody>
       </table>
     );
-    return content;
   }
+  return content;
 }
 
 export default UsersList;

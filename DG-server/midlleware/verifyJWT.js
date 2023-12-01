@@ -3,7 +3,6 @@ const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 const verifyJWT = (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
-
   if (!authHeader?.startsWith("Bearer ")) {
     return res
       .status(StatusCodes.UNAUTHORIZED)

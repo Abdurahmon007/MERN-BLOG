@@ -34,6 +34,7 @@ const Login = () => {
       setPassword("");
       navigate("/dash");
     } catch (err) {
+      console.log(err);
       if (!err.status) {
         setErrMsg("No Server Response");
       } else if (err.status === 400) {
@@ -81,6 +82,7 @@ const Login = () => {
             id="password"
             onChange={handlePwdInput}
             value={password}
+            autoComplete="off"
             required
           />
           <button className="form__submit-button">Sign In</button>
