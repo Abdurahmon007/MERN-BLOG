@@ -22,9 +22,9 @@ function UsersList() {
   if (isError) content = <p className="errmsg">{error?.data?.message}</p>;
   if (isSuccess) {
     const { ids } = users;
-    const tableContent = ids?.length
-      ? ids.map((userId) => <User userId={userId} key={userId} />)
-      : null;
+    const tableContent =
+      ids?.length && ids.map((userId) => <User userId={userId} key={userId} />);
+
     content = (
       <table className="table table--users">
         <thead className="table__thead">

@@ -30,7 +30,7 @@ const login = asyncHandler(async (req, res) => {
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "10s" }
+    { expiresIn: "15m" }
   );
 
   const refreshToken = jwt.sign(
@@ -38,7 +38,7 @@ const login = asyncHandler(async (req, res) => {
       username: foundUser.username,
     },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "20s" }
+    { expiresIn: "7d" }
   );
 
   res.cookie("jwt", refreshToken, {
@@ -55,9 +55,7 @@ const login = asyncHandler(async (req, res) => {
 // @route GET /auth/refresh
 // @access Public - because access token has expired
 const refresh = asyncHandler(async (req, res) => {
-  console.log("refresh");
   const cookies = req.cookies;
-  console.log(cookies);
   if (!cookies.jwt) return res.status(401).json({ message: "Unauthorized" });
   const refreshToken = cookies.jwt;
 
@@ -65,7 +63,6 @@ const refresh = asyncHandler(async (req, res) => {
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET,
     asyncHandler(async (err, decoded) => {
-      console.log(err, decoded);
       if (err)
         return res.status(StatusCodes.FORBIDDEN).json({ message: "Forbidden" });
       const foundUser = await User.findOne({ username: decoded.username });
@@ -81,7 +78,7 @@ const refresh = asyncHandler(async (req, res) => {
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "10s" }
+        { expiresIn: "15m" }
       );
       res.json({ accessToken });
     })
