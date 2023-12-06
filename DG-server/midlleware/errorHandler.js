@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
   );
   const status = err.statusCode ? err.statusCode : 500; // server error
   res.status(status);
-  res.json({ message: err.message });
+  res.json({ message: err.message, isError: true });
   console.log(`${err.stack} ---------`);
 };
 

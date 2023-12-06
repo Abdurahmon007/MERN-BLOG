@@ -1,12 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { memo } from "react";
 
-import { useSelector } from "react-redux";
-import { selectUserById, useUpdateUserMutation } from "./usersApiSlice";
+import { useGetUsersQuery } from "./usersApiSlice";
 
 function User({ userId }) {
-  const user = useSelector((state) => selectUserById(state, userId));
+  // This useGetUsersQuery() does note make any network request, it gets data from redux store only here
+  const { user } = useGetUsersQuery("usersList", {
+    selectFromResult: ({ data }) => ({
+      user: data?.entities[userId],
+    }),
+  });
+
   const navigate = useNavigate();
   if (user) {
     const handleEdit = () => navigate(`/dash/users/${userId}`);
@@ -25,5 +31,6 @@ function User({ userId }) {
     );
   } else return null;
 }
+const memoizedUser = memo(User);
 
-export default User;
+export default memoizedUser;

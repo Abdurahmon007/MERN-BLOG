@@ -1,11 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { memo } from "react";
 
-import { useSelector } from "react-redux";
-import { selectNoteById } from "./notesApiSlice";
+import { useGetNotesQuery } from "./notesApiSlice";
+
 function Note({ noteId }) {
-  const note = useSelector((state) => selectNoteById(state, noteId));
+  // This useGetNotesQuery() does note make any network request, it gets data from redux store only here
+  const { note } = useGetNotesQuery("notesList", {
+    selectFromResult: ({ data }) => ({
+      note: data?.entities[noteId],
+    }),
+  });
+
   const navigate = useNavigate();
   if (note) {
     const createdAt = new Date(note.createdAt).toLocaleString("en-US", {
@@ -41,4 +48,6 @@ function Note({ noteId }) {
   } else return null;
 }
 
-export default Note;
+const memoizedNote = memo(Note);
+
+export default memoizedNote;

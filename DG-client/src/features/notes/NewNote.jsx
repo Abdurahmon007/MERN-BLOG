@@ -1,12 +1,20 @@
 import React from "react";
 import NewNoteForm from "./NewNoteForm";
-import { useSelector } from "react-redux";
-import { selectAllUsers } from "../users/usersApiSlice";
+import { useGetUsersQuery } from "../users/usersApiSlice";
+import PulseLoader from "react-spinners/PulseLoader";
 
 function NewNote() {
-  const users = useSelector(selectAllUsers);
-  if (!users?.length) return <p>Currently Not Available</p>;
+  // This useGetUsersQuery() does note make any network request, it gets data from redux store only here
+  const { users } = useGetUsersQuery("usersList", {
+    selectFromResult: ({ data }) => ({
+      users: data?.ids.map((id) => data?.entities[id]),
+    }),
+  });
+
+  if (!users?.length) return <PulseLoader color="#fff" />;
+
   const content = <NewNoteForm users={users} />;
+
   return content;
 }
 

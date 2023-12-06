@@ -1,13 +1,12 @@
 const User = require("../models/User");
 const Note = require("../models/Note");
-const asyncHandler = require("express-async-handler");
 const bcryt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 
 // @desc    Get all users
 // @route   GET /
 // @access Private
-const getAllUsers = asyncHandler(async (req, res) => {
+const getAllUsers = async (req, res) => {
   const users = await User.find().select("-password").lean();
   if (!users?.length) {
     console.log(users);
@@ -16,23 +15,26 @@ const getAllUsers = asyncHandler(async (req, res) => {
       .json({ message: "Not found Users" });
   }
   res.status(StatusCodes.OK).json(users);
-});
+};
 
 // @desc    Create New User
 // @route   Post /
 // @access Private
-const createNewUser = asyncHandler(async (req, res) => {
+const createNewUser = async (req, res) => {
   const { username, password, roles } = req.body;
 
   // Confirm data;
-  if (!username || !password || !Array.isArray(roles) || !roles.length) {
+  if (!username || !password) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "All fields are required" });
   }
 
   // Check for duplicate
-  const duplicate = await User.findOne({ username: username }).lean().exec();
+  const duplicate = await User.findOne({ username: username })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
   if (duplicate) {
     return res
       .status(StatusCodes.CONFLICT)
@@ -41,7 +43,10 @@ const createNewUser = asyncHandler(async (req, res) => {
 
   // Hash password
   const hashedPwd = await bcryt.hash(password, 10); // salt rounds
-  const userObject = { username, password: hashedPwd, roles };
+  const userObject =
+    !Array.isArray(roles) || !roles.length
+      ? { username, password: hashedPwd }
+      : { username, password: hashedPwd, roles };
 
   // Create and store new user
   const user = await User.create(userObject);
@@ -54,12 +59,12 @@ const createNewUser = asyncHandler(async (req, res) => {
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Invalid user received" });
   }
-});
+};
 
 // @desc    Update a User
 // @route   Patch /
 // @access Private
-const updateUser = asyncHandler(async (req, res) => {
+const updateUser = async (req, res) => {
   const { id, username, password, roles, active } = req.body;
   // Confirm data
   if (
@@ -81,7 +86,10 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 
   // check for duplicate
-  const duplicate = await User.findOne({ username }).lean().exec();
+  const duplicate = await User.findOne({ username })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
 
   if (duplicate && duplicate._id.toString() !== id) {
     return res
@@ -99,12 +107,12 @@ const updateUser = asyncHandler(async (req, res) => {
 
   const updatedUser = await user.save();
   res.status(StatusCodes.OK).json({ message: `username ${username} updated` });
-});
+};
 
 // @desc    Delete a User
 // @route   Delete /
 // @access Private
-const deleteUser = asyncHandler(async (req, res) => {
+const deleteUser = async (req, res) => {
   const { id } = req.body;
   if (!id) {
     return res
@@ -129,7 +137,7 @@ const deleteUser = asyncHandler(async (req, res) => {
   const result = await User.deleteOne({ _id: id });
   const reply = `Username ${user.username} with ID ${user._id} deleted`;
   res.status(StatusCodes.OK).json(reply);
-});
+};
 
 module.exports = {
   getAllUsers,
