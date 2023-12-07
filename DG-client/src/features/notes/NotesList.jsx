@@ -3,9 +3,10 @@ import { useGetNotesQuery } from "./notesApiSlice";
 import Note from "./Note";
 import useAuth from "./../../hooks/useAuth";
 import { useLocation } from "react-router-dom";
+import PulseLoader from "react-spinners/PulseLoader";
 function NotesList() {
   const { username, isAdmin, isManager } = useAuth();
-  const location = useLocation()
+  const location = useLocation();
   const {
     data: notes,
     isError,
@@ -20,7 +21,7 @@ function NotesList() {
 
   let content;
 
-  if (isLoading) content = <p>...Loading</p>;
+  if (isLoading) content = <PulseLoader color="#fff" />;
   if (isError) content = <p className="errmsg">{error?.data?.message}</p>;
   if (isSuccess) {
     const { ids, entities } = notes;

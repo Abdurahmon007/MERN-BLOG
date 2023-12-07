@@ -1,6 +1,7 @@
 import React from "react";
 import { useGetUsersQuery } from "./usersApiSlice";
 import User from "./User";
+import PulseLoader from "react-spinners/PulseLoader";
 function UsersList() {
   const {
     data: users,
@@ -18,7 +19,7 @@ function UsersList() {
 
   let content;
 
-  if (isLoading) content = <p>...Loading</p>;
+  if (isLoading) content = <PulseLoader color="#fff" />;
   if (isError) content = <p className="errmsg">{error?.data?.message}</p>;
   if (isSuccess) {
     const { ids } = users;
