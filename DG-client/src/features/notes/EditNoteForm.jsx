@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import useAuth from "../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 const EditNoteForm = ({ note, users }) => {
   const { isManager, isAdmin } = useAuth();
@@ -110,6 +111,7 @@ const EditNoteForm = ({ note, users }) => {
             >
               <FontAwesomeIcon icon={faSave} />
             </button>
+            {deleteButton}
             {deleteButton}
           </div>
         </div>

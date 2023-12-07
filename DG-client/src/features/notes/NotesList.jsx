@@ -2,9 +2,10 @@ import React from "react";
 import { useGetNotesQuery } from "./notesApiSlice";
 import Note from "./Note";
 import useAuth from "./../../hooks/useAuth";
+import { useLocation } from "react-router-dom";
 function NotesList() {
   const { username, isAdmin, isManager } = useAuth();
-
+  const location = useLocation()
   const {
     data: notes,
     isError,
