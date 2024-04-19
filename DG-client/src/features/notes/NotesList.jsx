@@ -44,7 +44,7 @@ function NotesList() {
         <thead className="table__thead">
           <tr>
             <th scope="col" className="table__th note__status">
-              Username
+              DRB
             </th>
             <th scope="col" className="table__th note__created">
               Created
